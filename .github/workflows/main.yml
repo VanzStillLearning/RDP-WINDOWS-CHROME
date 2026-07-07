@@ -1,0 +1,30 @@
+name: Windows-Desktop-Remote
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows-desktop:
+    runs-on: windows-latest
+    timeout-minutes: 3600
+
+    steps:
+      - name: Menyiapkan Chrome Remote Desktop
+        shell: cmd
+        run: |
+          :: Mengunduh dan menginstal Chrome Remote Desktop secara otomatis
+          powershell -Command "System.Net.ServicePointManager::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://dl.google.com/linux/direct/chromeremotedesktophost.msi' -OutFile 'chromeremotedesktophost.msi'"
+          msiexec /i chromeremotedesktophost.msi /qn /norestart
+
+      - name: Menghubungkan RDP Windows
+        shell: cmd
+        run: |
+          :: Memasukkan kode autentikasi milik Anda dengan PIN default 123456
+          "%PROGRAMFILES(X86)%\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AdkVLPy_Bm8F_JRCm-jU1c6Nct74Iu0WnucQ06x9ge5G3ZpX9eZ6UVMX2mJqUME8p7iXNA" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=%COMPUTERNAME% --pin=123456
+
+      - name: Keep Alive
+        shell: cmd
+        run: |
+          :: Menjaga server Windows tetap hidup selama 6 jam
+          powershell -Command "Start-Sleep -Seconds 21600"
+          
