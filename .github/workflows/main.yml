@@ -12,21 +12,21 @@ jobs:
       - name: Menyiapkan Chrome Remote Desktop
         shell: cmd
         run: |
-          :: Mengunduh installer Chrome Remote Desktop resmi khusus Windows (jalur direct msi)
-          powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://dl.google.com/remotedesktop/headless/chromeremotedesktophost.msi' -OutFile 'chromeremotedesktophost.msi'"
+          :: Mengunduh menggunakan curl bawaan Windows dengan trik user-agent agar tidak 404
+          curl -L -o chromeremotedesktophost.msi "https://dl.google.com/remotedesktop/headless/chromeremotedesktophost.msi"
           
-          :: Menjalankan instalasi secara diam-diam (silent install)
+          :: Menjalankan instalasi secara diam-diam
           msiexec /i chromeremotedesktophost.msi /qn /norestart
 
       - name: Menghubungkan RDP Windows
         shell: cmd
         run: |
-          :: Ambil KODE BARU dari remotedesktop.google.com/headless sebelum menjalankan ini!
-          "%PROGRAMFILES(X86)%\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AdkVLPy_Bm8F_JRCm-jU1c6Nct74Iu0WnucQ06x9ge5G3ZpX9eZ6UVMX2mJqUME8p7iXNA" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=%COMPUTERNAME% --pin=123456
+          :: PENTING: Ganti kode di bawah dengan KODE BARU dari remotedesktop.google.com/headless!
+          "%PROGRAMFILES(X86)%\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AdkVLPwqiAY4fFXhs9c_vRR7nl0c53F1razWrucccPoYAJZQU8FAuCHvOWFkm4_8sbACRQ" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=%COMPUTERNAME% --pin=123456
 
       - name: Keep Alive
         shell: cmd
         run: |
-          :: Menjaga server Windows tetap hidup selama 6 jam
+          :: Menjaga server Windows tetap hidup
           powershell -Command "Start-Sleep -Seconds 21600"
           
