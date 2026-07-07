@@ -9,24 +9,21 @@ jobs:
     timeout-minutes: 3600
 
     steps:
-      - name: Menyiapkan Chrome Remote Desktop
+      - name: Menyiapkan Chrome Remote Desktop via Winget
         shell: cmd
         run: |
-          :: Bypass SSL dan unduh installer msi asli menggunakan WebClient Windows
-          powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://dl.google.com/remotedesktop/headless/chromeremotedesktophost.msi', 'chromeremotedesktophost.msi')"
+          :: Menginstal Chrome Remote Desktop menggunakan paket manager resmi bawaan Windows
+          winget install --id Google.ChromeRemoteDesktop --exact --silent --accept-source-agreements --accept-package-agreements
           
-          :: Eksekusi instalasi secara diam-diam
-          msiexec /i chromeremotedesktophost.msi /qn /norestart
-
       - name: Menghubungkan RDP Windows
         shell: cmd
         run: |
-          :: Menjalankan RDP menggunakan kode otorisasi terbaru Anda (PIN default: 123456)
-          "%PROGRAMFILES(X86)%\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AdkVLPyZnPItUePwgTcNMXkGLiaIp8tkVijJCrqz3mciGeSBpfTkoeOnJs6zwsGUksvBbw" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=%COMPUTERNAME% --pin=123456
+          :: Menggunakan kode otorisasi terbaru Anda (PIN default: 123456)
+          "%PROGRAMFILES(X86)%\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AdkVLPwtPe3TSEwc39x8vgSGPUHe9PTwpaM0CyIx44DESnfYXS3Q0G3aJGQyEY28XO3R5Q" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=%COMPUTERNAME% --pin=123456
 
       - name: Keep Alive
         shell: cmd
         run: |
-          :: Menjaga server Windows tetap aktif selama 6 jam
+          :: Menjaga server Windows tetap hidup selama 6 jam
           powershell -Command "Start-Sleep -Seconds 21600"
           
