@@ -9,17 +9,20 @@ jobs:
     timeout-minutes: 3600
 
     steps:
-      - name: Menyiapkan Chrome Remote Desktop via Choco
+      - name: Mengambil File MSI dari Repositori
+        uses: actions/checkout@v4
+
+      - name: Menyiapkan Chrome Remote Desktop
         shell: cmd
         run: |
-          :: Menginstal Chrome Remote Desktop menggunakan paket manager Choco bawaan runner
-          choco install chrome-remote-desktop -y
+          :: Menjalankan instalasi msi langsung dari file yang ada di repo Anda
+          msiexec /i chromeremotedesktophost.msi /qn /norestart
           
       - name: Menghubungkan RDP Windows
         shell: cmd
         run: |
           :: Menggunakan kode otorisasi terbaru Anda (PIN default: 123456)
-          "%PROGRAMFILES(X86)%\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AdkVLPz-LBi5BNoi5U5d6hYdLZvyFifzUDFLCmtws2X7vR_LGyi4y1vTZ2MIoifqGvMmtg" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=%COMPUTERNAME% --pin=123456
+          "%PROGRAMFILES(X86)%\Google\Chrome Remote Desktop\CurrentVersion\remoting_start_host.exe" --code="4/0AdkVLPwTRNkSdEB6SjNnlXRRSMvrlkbjJxNO98xDLVY5WE0mNxbNJS_SlP-znzxZH3tOQQ" --redirect-url="https://remotedesktop.google.com/_/oauthredirect" --name=%COMPUTERNAME% --pin=123456
 
       - name: Keep Alive
         shell: cmd
